@@ -54,11 +54,6 @@ jobs:
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
-      - name: Debug host/user (safe)
-        run: |
-          echo "HOST=${{ secrets.DEPLOY_HOST }}"
-          echo "USER=${{ secrets.DEPLOY_USER }}"
-          
       - name: Deploy to droplet (workshop)
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -67,15 +62,22 @@ jobs:
           key: ${{ secrets.DEPLOY_WORKSHOP_SSH_KEY }}
           debug: true
           script: |
-            if [ ! -d /opt/python_workshop ]; then
-              mkdir -p /opt/python_workshop
-              cd /opt/python_workshop
+
+            set -euo pipefail
+
+            WORKDIR=/home/deploy/python_workshop
+
+            if [ ! -d "$WORKDIR/.git" ]; then
+              mkdir -p "$WORKDIR"
+              cd "$WORKDIR"
               git clone https://github.com/FHNWBAI/python_workshop.git .
             else
-              cd /opt/python_workshop
+              cd "$WORKDIR"
               git fetch origin
               git reset --hard origin/main
             fi
+
             docker-compose -f docker-compose.prod.yml pull
             docker-compose -f docker-compose.prod.yml up -d
+
 
