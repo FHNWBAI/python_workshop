@@ -54,6 +54,11 @@ jobs:
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
+      - name: Debug host/user (safe)
+        run: |
+          echo "HOST=${{ secrets.DEPLOY_HOST }}"
+          echo "USER=${{ secrets.DEPLOY_USER }}"
+          
       - name: Deploy to droplet (workshop)
         uses: appleboy/ssh-action@v1.0.3
         with:
