@@ -1,0 +1,76 @@
+name: CI
+
+# Run tests on every push and pull request
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  # Test job: runs pytest on every push and PR
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest
+
+  # Deploy job: builds and pushes Docker image to GHCR when changes are merged to main
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    # Only run when code is pushed to the main branch
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        env:
+          IMAGE_NAME: ghcr.io/${{ github.repository }}:latest
+        run: |
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
+
+      - name: Deploy to droplet (workshop)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_WORKSHOP_SSH_KEY }}
+          script: |
+            if [ ! -d /opt/python_workshop ]; then
+              mkdir -p /opt/python_workshop
+              cd /opt/python_workshop
+              git clone git@github.com:FHNWBAI/python_workshop.git .
+            else
+              cd /opt/python_workshop
+              git fetch origin
+              git reset --hard origin/main
+            fi
+            docker-compose -f docker-compose.prod.yml pull
+            docker-compose -f docker-compose.prod.yml up -d
+

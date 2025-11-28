@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FastAPI (local)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.main:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "jinja": false,
+      "console": "integratedTerminal"
+      // This configuration runs FastAPI on your local machine (outside the container)
+    },
+    {
+      "name": "FastAPI (devcontainer)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.main:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "jinja": false,
+      "console": "integratedTerminal"
+      // This configuration is meant to be used when the project is opened in a Dev Container.
+      // The command is the same, but the interpreter and environment are inside the container.
+    }
+  ]
+}
+
