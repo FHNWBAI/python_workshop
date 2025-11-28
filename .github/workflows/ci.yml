@@ -49,9 +49,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        env:
-          IMAGE_NAME: ghcr.io/${{ github.repository }}:latest
         run: |
+          IMAGE_NAME=$(echo "ghcr.io/${{ github.repository }}:latest" | tr '[:upper:]' '[:lower:]')
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
