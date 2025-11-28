@@ -60,11 +60,12 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_WORKSHOP_SSH_KEY }}
+          debug: true
           script: |
             if [ ! -d /opt/python_workshop ]; then
               mkdir -p /opt/python_workshop
               cd /opt/python_workshop
-              git clone git@github.com:FHNWBAI/python_workshop.git .
+              git clone https://github.com/FHNWBAI/python_workshop.git .
             else
               cd /opt/python_workshop
               git fetch origin
