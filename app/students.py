@@ -54,3 +54,11 @@ def read_example_student():
         "student": "Example Student",
         "message": "Replace this with your own endpoint!",
     }
+
+
+@router.get("/faruk")
+def read_faruk():
+    return {
+        "student": "Faruk",
+        "message": "Hello amigos - and, welcome on board!",
+    }
