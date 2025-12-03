@@ -62,3 +62,11 @@ def read_faruk():
         "student": "Faruk",
         "message": "Hello amigos - and, welcome on board!",
     }
+
+
+@router.get("/kutalmis")
+def read_kutalmis():
+    return {
+        "student": "Kutalmis",
+        "message": "This code will be deployed to the production server!",
+    }
