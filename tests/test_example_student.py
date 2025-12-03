@@ -19,3 +19,10 @@ def test_example_student():
     assert response.status_code == 200
     data = response.json()
     assert data["student"] == "Example Student"
+
+
+def test_kutalmis_student():
+    response = client.get("/students/kutalmis")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["student"] == "Kutalmis"
