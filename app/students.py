@@ -56,13 +56,12 @@ def read_example_student():
     }
 
 
-@router.get("/faruk")
-def read_faruk():
-    return {
-        "student": "Faruk",
-        "message": "Hello amigos - and, welcome on board!",
-    }
-
+#@router.get("/faruk")
+#def read_faruk():
+#    return {
+#        "student": "Faruk",
+#        "message": "Hello amigos - and, welcome on board!",
+#    }
 
 @router.get("/kutalmis")
 def read_kutalmis():
