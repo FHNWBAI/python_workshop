@@ -83,11 +83,17 @@ jobs:
             fi
 
             echo "Pulling latest Docker image..."
-            # Try docker compose first (newer syntax), fall back to docker-compose
-            if command -v docker &> /dev/null && docker compose version &> /dev/null; then
+            # Prefer docker compose (plugin) over docker-compose (standalone) to avoid ContainerConfig errors
+            if command -v docker &> /dev/null && docker compose version &> /dev/null 2>&1; then
+              echo "Using 'docker compose' (plugin)"
               docker compose -f docker-compose.prod.yml pull
               docker compose -f docker-compose.prod.yml up -d
             elif command -v docker-compose &> /dev/null; then
+              echo "Using 'docker-compose' (standalone) - applying workaround for ContainerConfig error"
+              # Workaround for old docker-compose (1.29.2) ContainerConfig error
+              # Stop and remove old container before recreating to avoid inspection issues
+              docker-compose -f docker-compose.prod.yml stop || true
+              docker-compose -f docker-compose.prod.yml rm -f || true
               docker-compose -f docker-compose.prod.yml pull
               docker-compose -f docker-compose.prod.yml up -d
             else
