@@ -84,6 +84,9 @@ Follow these steps to add your own endpoint:
    - Wait for CI tests to pass
    - Once approved and merged, your endpoint will be live!
 
+7. **Visit your endpoint:**
+   - [http://157.230.28.78:8082/](http://157.230.28.78:8082/)
+
 ## Using the Dev Container
 
 If you're using VS Code, you can work inside a Docker container:
