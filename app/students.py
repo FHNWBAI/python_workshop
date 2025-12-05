@@ -74,6 +74,6 @@ def read_kutalmis():
 @router.get("/gokalp")
 def read_gokalp():
     return {
-        "student": "Gokalp,
-        "message": "Welcome dude!",
+        "student": "Gokalp",
+        "message": "Welcome!",
     }
