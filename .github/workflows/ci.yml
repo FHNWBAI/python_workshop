@@ -62,22 +62,45 @@ jobs:
           key: ${{ secrets.DEPLOY_WORKSHOP_SSH_KEY }}
           debug: true
           script: |
-
             set -euo pipefail
 
             WORKDIR=/home/deploy/python_workshop
 
+            echo "Starting deployment..."
+            echo "Working directory: $WORKDIR"
+
+            # Create directory if it doesn't exist
             if [ ! -d "$WORKDIR/.git" ]; then
+              echo "Cloning repository..."
               mkdir -p "$WORKDIR"
               cd "$WORKDIR"
               git clone https://github.com/FHNWBAI/python_workshop.git .
             else
+              echo "Updating repository..."
               cd "$WORKDIR"
               git fetch origin
               git reset --hard origin/main
             fi
 
-            docker-compose -f docker-compose.prod.yml pull
-            docker-compose -f docker-compose.prod.yml up -d
+            echo "Pulling latest Docker image..."
+            # Prefer docker compose (plugin) over docker-compose (standalone) to avoid ContainerConfig errors
+            if command -v docker &> /dev/null && docker compose version &> /dev/null 2>&1; then
+              echo "Using 'docker compose' (plugin)"
+              docker compose -f docker-compose.prod.yml pull
+              docker compose -f docker-compose.prod.yml up -d
+            elif command -v docker-compose &> /dev/null; then
+              echo "Using 'docker-compose' (standalone) - applying workaround for ContainerConfig error"
+              # Workaround for old docker-compose (1.29.2) ContainerConfig error
+              # Stop and remove old container before recreating to avoid inspection issues
+              docker-compose -f docker-compose.prod.yml stop || true
+              docker-compose -f docker-compose.prod.yml rm -f || true
+              docker-compose -f docker-compose.prod.yml pull
+              docker-compose -f docker-compose.prod.yml up -d
+            else
+              echo "Error: Neither 'docker compose' nor 'docker-compose' found"
+              exit 1
+            fi
+
+            echo "Deployment completed successfully!"
 
 
