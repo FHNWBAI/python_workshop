@@ -59,18 +59,12 @@ def read_example_student():
 def read_example_student():
     return {
         "student": "Anna",
-        "message": "We don't have any Anna here!",
-    }
-
-@router.get("/faruk")
-def read_faruk():
-    return {
-        "student": "Faruk",
-        "message": "Hello amigos - and, welcome on board!",
+        "message": "We don't have any Anna in the class.",
     }
 
 @router.get("/kutalmis")
 def read_kutalmis_student():
     return {
         "student": "Kutalmis",
+        "message": "Thanks for participating everyone.",
     }

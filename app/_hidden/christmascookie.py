@@ -1,11 +1,11 @@
 """
-Easter egg: Snake game for Faruk's endpoint
+Christmas Cookie: Snake game for Faruk's endpoint
 """
 
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
-# Create a router for the easter egg endpoint
+# Create a router for the Christmas Cookie endpoint
 router = APIRouter(prefix="/students", tags=["students"])
 
 
@@ -72,7 +72,7 @@ def get_snake_game_html():
     </head>
     <body>
         <div class="container">
-            <h1>🐍 Snake Game - Easter Egg!</h1>
+            <h1>🐍 Snake Game - Christmas Cookie!</h1>
             <div class="info">Hello amigos - and, welcome on board!</div>
             <canvas id="gameCanvas" width="400" height="400"></canvas>
             <div class="score">Score: <span id="score">0</span></div>

@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.testclient import TestClient
 from app.students import router as students_router
-from app._hidden.easteregg import router as easteregg_router
+from app._hidden.christmascookie import router as christmascookie_router
 
 app = FastAPI(title="Python Workshop API")
 
 app.include_router(students_router)
-app.include_router(easteregg_router)
+app.include_router(christmascookie_router)
 
 
 @app.get("/", response_class=HTMLResponse)
