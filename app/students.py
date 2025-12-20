@@ -66,5 +66,13 @@ def read_example_student():
 def read_kutalmis_student():
     return {
         "student": "Kutalmis",
-        "message": "Thanks for participating everyone.",
+        "message": "This code will be deployed to the production server!",
+    }
+
+
+@router.get("/gokalp")
+def read_gokalp():
+    return {
+        "student": "Gokalp",
+        "message": "Welcome!",
     }
