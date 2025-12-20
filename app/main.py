@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.testclient import TestClient
 from app.students import router as students_router
-from app._hidden.easteregg import router as easteregg_router
+from app._hidden.christmascookie import router as christmascookie_router
 
 app = FastAPI(title="Python Workshop API")
 
 app.include_router(students_router)
-app.include_router(easteregg_router)
+app.include_router(christmascookie_router)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -20,16 +20,19 @@ def read_root():
     for route in app.routes:
         if hasattr(route, 'path') and route.path.startswith('/students/') and route.path != '/students':
             try:
-                # Call the endpoint to get the data
-                response = client.get(route.path)
+                # Call the endpoint to get the data, explicitly requesting JSON
+                response = client.get(route.path, headers={"Accept": "application/json"})
                 if response.status_code == 200:
-                    data = response.json()
-                    # Extract student and message if they exist
-                    students_data.append({
-                        "student": data.get("student", "Unknown"),
-                        "message": data.get("message", ""),
-                        "endpoint": route.path
-                    })
+                    # Check if response is JSON (not HTML)
+                    content_type = response.headers.get("content-type", "")
+                    if "application/json" in content_type:
+                        data = response.json()
+                        # Extract student and message if they exist
+                        students_data.append({
+                            "student": data.get("student", "Unknown"),
+                            "message": data.get("message", ""),
+                            "endpoint": route.path
+                        })
             except Exception:
                 # Skip endpoints that fail
                 continue
